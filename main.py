@@ -44,10 +44,6 @@ def main(nframes=1000, time_window=30e9):
     min_z, max_z = data["z"].min(), data["z"].max()
     fig = pyplot.figure(dpi=300)
     ax = fig.add_axes((0, 0, 1, 1), projection="3d")
-    tracks = construct_tracks(data)
-    print(max([len(tracks[key]) for key in tracks]))
-    if True:
-        return
 
     def set_lims():
         ax.set_xlim(min_x, max_x)
