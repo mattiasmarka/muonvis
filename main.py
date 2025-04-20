@@ -33,9 +33,10 @@ def plot_tracks(ax, tracks):
     return lines
 
 
-def main(nframes=1000, time_window=30e9):
+def main(nframes=1000, time_window=30e9, vislength=60e9):
     data = np.genfromtxt(open("example.csv"), delimiter=",", dtype=dtype)
     min_time, max_time = data["time"].min(), data["time"].max()
+    data = data[data["time"] <= min_time + vislength]
 
     min_x, max_x = data["x"].min(), data["x"].max()
     min_y, max_y = data["y"].min(), data["y"].max()
@@ -67,7 +68,8 @@ def main(nframes=1000, time_window=30e9):
         ax.set_zlim(-200, 0)
 
     def update(frame):
-        time = ((max_time - min_time) / nframes) * frame + min_time
+        # time = ((max_time - min_time) / nframes) * frame + min_time
+        time = min_time + frame * 1e9/30
         ddata = data[np.where(np.logical_and(data["time"] > time - time_window * 0.5,
                                                    data["time"] < time + time_window * 0.5))]
         tracks = construct_tracks(ddata)
