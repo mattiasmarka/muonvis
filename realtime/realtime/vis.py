@@ -14,7 +14,7 @@ def vec3(x, y, z):
     scale = SCALE_VIS / SCALE_DET
     return ursina.Vec3(x * scale , y * scale, z * scale)
 
-app = ursina.Ursina()
+#app = ursina.Ursina()
 data = get_data("example.csv")
 
 min_time_det = data["time"].min()
@@ -44,5 +44,7 @@ def update():
                     vertices=[vec3(*coords) for coords in tracks[track]],
                     mode="line"))
     entities = {entity:entities[entity] for entity in entities if entities[entity] != False}
-        
+
+ursina.Sky(color=ursina.color.color(0,0,0))
+ursina.EditorCamera(rotate_around_mouse_hit=True)
 app.run()
