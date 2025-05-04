@@ -11,8 +11,11 @@ HALFLIFE = 1e9 # ns
 MAXLIFE = 5e9 # ns
 LOOKBACK_TIME = 15e9 # ns
 
+FANRADIUS = 560 / 2
+
+fix = lambda x, xmin, xmax: (x - xmin - (xmax - xmin) / 2) * SCALE
+
 def det_to_vis(x, y, z):
-    fix = lambda x, xmin, xmax: (x - xmin - (xmax - xmin) / 2) * SCALE
     return ursina.Vec3(fix(y, YMIN, YMAX),
                        fix(z, ZMIN, ZMAX),
                        -fix(x, XMIN, XMAX))
@@ -45,6 +48,12 @@ def draw_box():
                                             mode="line"),
                           color=color)
     return
+
+def draw_fan():
+    color = ursina.color.gray
+    ursina.Entity(model=ursina.Circle(radius=FANRADIUS * SCALE, mode="line", resolution=64),
+                  color=ursina.color.white,
+                  position=det_to_vis(XMAX, (YMAX - YMIN) / 2, ZMIN + (ZMAX - ZMIN) / 2))
 
 entities = dict()
 min_time_vis = ursina.time.time_ns()
@@ -105,4 +114,5 @@ if __name__ == "__main__":
     ursina.Sky(color=ursina.color.color(0,0,0))
     ursina.EditorCamera(rotate_around_mouse_hit=True)
     draw_box()
+    draw_fan()
     app.run()

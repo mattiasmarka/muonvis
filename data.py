@@ -47,7 +47,7 @@ def line_intrscts_plane(line, plane):
 
 XMIN, XMAX = 0, 1024
 YMIN, YMAX = 0, 2048
-ZMIN, ZMAX = 170, 1170
+ZMIN, ZMAX = 170, 770
 
 def tracks_in_chmbr(tracks_in_det):
     tracks_in_chmbr = dict()
