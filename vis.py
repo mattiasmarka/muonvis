@@ -26,7 +26,7 @@ def draw_box():
             if y == YMIN and z == ZMIN:
                 color = ursina.color.red
             ursina.Entity(model=ursina.Mesh(vertices=[det_to_vis(XMIN, y, z),
-                                                      det_to_vis(XMAX, y, z)], 
+                                                      det_to_vis(XMAX, y, z)],
                                             mode="line"),
                           color=color)
     for x in (XMIN, XMAX):
@@ -35,7 +35,7 @@ def draw_box():
             if x == XMIN and z == ZMIN:
                 color = ursina.color.green
             ursina.Entity(model=ursina.Mesh(vertices=[det_to_vis(x, YMIN, z),
-                                                      det_to_vis(x, YMAX, z)], 
+                                                      det_to_vis(x, YMAX, z)],
                                             mode="line"),
                           color=color)
     for x in (XMIN, XMAX):
@@ -44,7 +44,7 @@ def draw_box():
             if x == XMIN and y == YMIN:
                 color = ursina.color.blue
             ursina.Entity(model=ursina.Mesh(vertices=[det_to_vis(x, y, ZMIN),
-                                                      det_to_vis(x, y, ZMAX)], 
+                                                      det_to_vis(x, y, ZMAX)],
                                             mode="line"),
                           color=color)
     return
@@ -108,11 +108,14 @@ def update():
     fade_out_entities()
     clean_entities()
     return
-    
+
 if __name__ == "__main__":
-    app = ursina.Ursina()
+    app = ursina.Ursina(size=(1000, 1000))
+    ursina.camera.orthographic = True
+    ursina.camera.fov=1.65
     ursina.Sky(color=ursina.color.color(0,0,0))
-    ursina.EditorCamera(rotate_around_mouse_hit=True)
+    # ursina.EditorCamera(rotate_around_mouse_hit=True)
     draw_box()
     draw_fan()
+    ursina.EditorCamera()
     app.run()
