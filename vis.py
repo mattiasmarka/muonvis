@@ -1,4 +1,6 @@
 import ursina
+import os
+import shutil
 
 from data import *
 
@@ -12,6 +14,10 @@ MAXLIFE = 5e9 # ns
 LOOKBACK_TIME = 15e9 # ns
 
 FANRADIUS = 560 / 2
+
+FPS = 30
+
+SCREENDIR = "./screenshots"
 
 fix = lambda x, xmin, xmax: (x - xmin - (xmax - xmin) / 2) * SCALE
 
@@ -118,4 +124,9 @@ if __name__ == "__main__":
     draw_box()
     draw_fan()
     ursina.EditorCamera()
-    app.run()
+    shutil.rmtree(SCREENDIR)
+    os.mkdir(SCREENDIR)
+    while True:
+       ursina.time.sleep(1 / FPS)
+       app.step()
+       app.screenshot(namePrefix = "%s/%d.png" % (SCREENDIR, ursina.time.time_ns()), defaultFilename=0)
