@@ -1,6 +1,9 @@
 import ursina
+import ursina.prefabs.video_recorder as video_recorder
 import os
 import shutil
+import numpy
+import cv2
 
 from data import *
 
@@ -9,15 +12,17 @@ SCALE_VIS = 6
 
 SCALE = SCALE_VIS / SCALE_DET
 
-HALFLIFE = 1e9 # ns
-MAXLIFE = 5e9 # ns
-LOOKBACK_TIME = 15e9 # ns
+HALFLIFE = 2e9 # ns
+MAXLIFE = 8e9 # ns
+LOOKBACK_TIME = 1e9 # ns
 
 FANRADIUS = 560 / 2
 
-FPS = 30
-
 SCREENDIR = "./screenshots"
+
+DUR = 60
+
+FPS = 24
 
 fix = lambda x, xmin, xmax: (x - xmin - (xmax - xmin) / 2) * SCALE
 
@@ -104,7 +109,16 @@ data = get_data("example.csv")
 
 min_time_det = data["time"].min()
 
+encoder = None
+out = None
+
+ttime = 0
+
+app = ursina.Ursina(size=(1000, 1000))
+app.fps = FPS
+
 def update():
+    global encoder, out, ttime
     time = ursina.time.time_ns() - min_time_vis
     time_det = min_time_det + time
     where = numpy.logical_and(data["time"] > time_det - LOOKBACK_TIME,
@@ -113,20 +127,29 @@ def update():
     add_entities(tracks)
     fade_out_entities()
     clean_entities()
+    if ttime == 0.0:
+        print("make!")
+        encoder = cv2.VideoWriter_fourcc(*"mp4v")
+        out = cv2.VideoWriter('%d.mp4' % ursina.time.time(), encoder, FPS, (app.win.get_x_size(), app.win.get_y_size()))
+    image = numpy.frombuffer(app.win.getScreenshot().get_ram_image_as("RGBA").get_data(), dtype=numpy.uint8)
+    image = image.reshape(app.win.get_x_size(), app.win.get_y_size(), 4)
+    image = cv2.cvtColor(image, cv2.COLOR_RGBA2BGR)
+    image = numpy.flipud(image)
+    ttime += ursina.time.dt
+    out.write(image)
+    if ttime >= DUR:
+        print("release!")
+        out.release()
+        ttime = 0
     return
 
 if __name__ == "__main__":
-    app = ursina.Ursina(size=(1000, 1000))
     ursina.camera.orthographic = True
     ursina.camera.fov=1.65
     ursina.Sky(color=ursina.color.color(0,0,0))
     # ursina.EditorCamera(rotate_around_mouse_hit=True)
     draw_box()
     draw_fan()
-    ursina.EditorCamera()
-    shutil.rmtree(SCREENDIR)
-    os.mkdir(SCREENDIR)
     while True:
-       ursina.time.sleep(1 / FPS)
-       app.step()
-       app.screenshot(namePrefix = "%s/%d.png" % (SCREENDIR, ursina.time.time_ns()), defaultFilename=0)
+        ursina.time.sleep(1 / FPS)
+        app.step()
