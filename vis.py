@@ -117,8 +117,15 @@ ttime = 0
 app = ursina.Ursina(size=(1000, 1000))
 app.fps = FPS
 
+last_time = None
+
 def update():
-    global encoder, out, ttime
+    global encoder, out, ttime, last_time
+    current_time = ursina.time.time()
+    delta_time = current_time - last_time
+    if delta_time < 1.0 / FPS:
+        ursina.time.sleep(1 / FPS - delta_time)
+    last_time = current_time
     time = ursina.time.time_ns() - min_time_vis
     time_det = min_time_det + time
     where = numpy.logical_and(data["time"] > time_det - LOOKBACK_TIME,
@@ -143,13 +150,13 @@ def update():
         ttime = 0
     return
 
+last_time = ursina.time.time()
+
 if __name__ == "__main__":
     ursina.camera.orthographic = True
     ursina.camera.fov=1.65
     ursina.Sky(color=ursina.color.color(0,0,0))
     # ursina.EditorCamera(rotate_around_mouse_hit=True)
-    draw_box()
-    draw_fan()
-    while True:
-        ursina.time.sleep(1 / FPS)
-        app.step()
+    # draw_box()
+    # draw_fan()
+    app.run()
