@@ -12,15 +12,15 @@ SCALE_VIS = 6
 
 SCALE = SCALE_VIS / SCALE_DET
 
-HALFLIFE = 2e9 # ns
-MAXLIFE = 8e9 # ns
-LOOKBACK_TIME = 1e9 # ns
+HALFLIFE = 1e9 # ns
+MAXLIFE = 3e9 # ns
+LOOKBACK_TIME = (1 / FPS) * 1e9
 
 FANRADIUS = 560 / 2
 
 SCREENDIR = "./screenshots"
 
-DUR = 60
+DUR = 60*3
 
 FPS = 24
 

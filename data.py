@@ -1,7 +1,7 @@
 import numpy
 import unittest
 
-dtype = numpy.dtype([("event_id", int),
+dtype = numpy.dtype([("event_id", float),
                      ("x", float),
                      ("y", float),
                      ("z", float),
@@ -13,9 +13,25 @@ dtype = numpy.dtype([("event_id", int),
                      ("particle_type", str),
                      ("dunno", str)])
 
+EPOCHLEN = 76e12
+
+def fix_times(data):
+    data = data.copy()
+    epoch = 0
+    last_time = 0
+    for i in range(len(data)):
+        if data[i]["time"] < last_time:
+            epoch += 1
+            print("HIT!", i)
+        last_time = data[i]["time"]
+        data[i]["time"] = (epoch * EPOCHLEN + data[i]["event_id"]) / 1e3
+    return data
+
 
 def get_data(fname):
-    return numpy.loadtxt(fname, dtype=dtype, delimiter=",")
+    data = numpy.loadtxt(fname, dtype=dtype, delimiter=",")
+    data = fix_times(data)
+    return data
 
 def tracks_in_det(data):
     tracks_in_det = dict()
