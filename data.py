@@ -13,7 +13,7 @@ dtype = numpy.dtype([("event_id", float),
                      ("particle_type", str),
                      ("dunno", str)])
 
-EPOCHLEN = 76e12
+EPOCHLEN = 72e12
 
 def fix_times(data):
     data = data.copy()
