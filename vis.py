@@ -12,6 +12,8 @@ SCALE_VIS = 6
 
 SCALE = SCALE_VIS / SCALE_DET
 
+FPS = 12
+
 HALFLIFE = 1e9 # ns
 MAXLIFE = 3e9 # ns
 LOOKBACK_TIME = (1 / FPS) * 1e9
@@ -21,8 +23,6 @@ FANRADIUS = 560 / 2
 SCREENDIR = "./screenshots"
 
 DUR = 60*3
-
-FPS = 24
 
 fix = lambda x, xmin, xmax: (x - xmin - (xmax - xmin) / 2) * SCALE
 
