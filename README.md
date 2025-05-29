@@ -24,11 +24,6 @@ f1f2f306010108f4f5f6
 def fan_on_cmd() -> str:
     return "f1f2f306010108f4f5f6"
 
-def brightness_cmd(level: int) -> str:
-    b_hex = f"{level:02x}"
-    checksum = f"{(level + 0x09) & 0xFF:02x}"
-    return f"f1f2f30801{b_hex}{checksum}f4f5f6"
-
 def media_play_cmd(index: int) -> str:
     index_hex = f"{index:02x}"
     second_byte = f"{index + 5:02x}"
